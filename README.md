@@ -58,6 +58,18 @@ npm start
 - App.js - the root component
 - app.json - information in your project
 
+## Set index.js to be the root component
+
+In order to set other component to be the root component instead of App.js, you need to set entryPoint in app.json
+
+```json
+{
+  "expo": {
+    "entryPoint": "./src/index.js"
+  }
+}
+```
+
 ## Views & Texts
 
 - Views - use to wrap other component like div tag but you can't like text directly inside.
@@ -106,3 +118,78 @@ const styles = StyleSheet.create({
   },
 });
 ```
+
+## react-native-paper
+
+Unfortunately, Material-UI in React is not compatible with React Native. Therefore, in order to use material design in react native, you need to use react-native-paper.
+
+1. install react-native-paper
+
+```
+npm install react-native-paper
+```
+
+2. edit babel.config.js
+
+```
+
+```
+
+## State
+
+You can use state like React such as useState, useEffect
+
+## Button
+
+Button props
+
+- title - text in the button
+- onPress - when press the button what function will be applied
+- color - color code
+
+```javascript
+
+```
+
+## Text Inputs
+
+use `<TextInput />` to create text input form
+
+## Lists
+
+use the same logic like React
+
+```javascript
+{
+  array.map((item) => {
+    return (
+      <View key={item.key}>
+        <Text>{item.name}</Text>
+      </View>
+    );
+  });
+}
+```
+
+## ScrollView
+
+By default, react-native app cannot be scroll. Therefore, you need to import **ScrollView** and wrap the element that need to be scrolled.
+
+## Alerts
+
+Show alert message using **Alert** component from react-native
+
+## Dismissing the keyboard
+
+If you want the keyboard to be disappeared when press on the space. You need to import **TouchableWithoutFeedback** and **Keyboard** component.
+
+```javascript
+<TouchableWithoutFeedback onPress={() => {
+  Keyboard.dismiss();
+}}>
+```
+
+## Reference
+
+- [define root component](https://stackoverflow.com/questions/47742280/how-to-define-entry-point-for-react-native-app)
+-
