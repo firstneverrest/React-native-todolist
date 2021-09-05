@@ -9,13 +9,13 @@ const globalStyles = StyleSheet.create({
   },
   header: {
     fontFamily: 'sarabun-bold',
-
     fontSize: 20,
     marginVertical: 4,
     lineHeight: 40,
   },
   body: {
     fontFamily: 'sarabun-regular',
+    fontSize: 16,
   },
   primary: {
     color: color.darkPurple,
