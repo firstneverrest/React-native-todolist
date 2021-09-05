@@ -41,7 +41,6 @@ const LoginScreen = ({ navigation }: NavigationProps) => {
           setIsError(false);
           setUsername('');
           setPassword('');
-          console.log(token);
 
           navigation.navigate('TodoList');
         }
