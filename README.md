@@ -189,6 +189,65 @@ If you want the keyboard to be disappeared when press on the space. You need to 
 }}>
 ```
 
+## Icons
+
+Expo provide icons by default when you install `expo init`. Look about [expo icons here](https://icons.expo.fyi/).
+
+```javascript
+import { Ionicons } from '@expo/vector-icons';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Ionicons name="md-checkmark-circle" size={32} color="green" />
+    </View>
+  );
+}
+```
+
+## Custom font
+
+1. Add font with .ttf format in the assets/fonts
+2. Use Font.loadAsync() to load fonts
+3. Use AppLoading component to show something while font is loading
+4. If you get error with expo-app-loading, you can install it by `expo install expo-app-loading`
+
+```javascript
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading';
+import Login from './screens/Login';
+
+const getFonts = () =>
+  Font.loadAsync({
+    'sarabun-thin': require('../assets/fonts/Sarabun-Thin.ttf'),
+    'sarabun-light': require('../assets/fonts/Sarabun-Light.ttf'),
+    'sarabun-regular': require('../assets/fonts/Sarabun-Regular.ttf'),
+    'sarabun-bold': require('../assets/fonts/Sarabun-Bold.ttf'),
+  });
+
+const App: React.FC = () => {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  if (fontsLoaded) {
+    return <Login />;
+  } else {
+    return (
+      <AppLoading
+        startAsync={getFonts}
+        onFinish={() => setFontsLoaded(true)}
+        onError={() => console.log('error')}
+      >
+        <View style={styles.container}>
+          <Text>Hello World!</Text>
+        </View>
+      </AppLoading>
+    );
+  }
+};
+```
+
 ## Reference
 
 - [define root component](https://stackoverflow.com/questions/47742280/how-to-define-entry-point-for-react-native-app)
