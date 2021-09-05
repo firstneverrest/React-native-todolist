@@ -1,2 +1,2 @@
-export { setCookie, getCookie, deleteCookie } from './cookie';
+export { getData, storeData, deleteData } from './storage';
 export { logout } from './logout';

@@ -1,5 +1,5 @@
-import { deleteCookie } from './cookie';
+import { deleteData } from './storage';
 
 export const logout = () => {
-  deleteCookie('token');
+  deleteData('token');
 };
