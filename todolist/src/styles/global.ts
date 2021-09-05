@@ -4,9 +4,18 @@ import color from './colors';
 const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.white,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    marginTop: 16,
+  },
+  header: {
+    fontFamily: 'sarabun-bold',
+
+    fontSize: 20,
+    marginVertical: 4,
+    lineHeight: 40,
+  },
+  body: {
+    fontFamily: 'sarabun-regular',
   },
   primary: {
     color: color.darkPurple,
