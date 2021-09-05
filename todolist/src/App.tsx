@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import AppLoading from 'expo-app-loading';
-import Login from './screens/Login';
+import Routes from './routes/Routes';
+import globalStyles from './styles/global';
 
 const getFonts = () =>
   Font.loadAsync({
@@ -12,11 +13,11 @@ const getFonts = () =>
     'sarabun-bold': require('../assets/fonts/Sarabun-Bold.ttf'),
   });
 
-const App: React.FC = () => {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+const App = () => {
+  const [fontsLoaded, setFontsLoaded] = useState<Boolean>(false);
 
   if (fontsLoaded) {
-    return <Login />;
+    return <Routes />;
   } else {
     return (
       <AppLoading
@@ -24,21 +25,12 @@ const App: React.FC = () => {
         onFinish={() => setFontsLoaded(true)}
         onError={() => console.log('error')}
       >
-        <View style={styles.container}>
-          <Text>Hello World!</Text>
+        <View style={globalStyles.container}>
+          <Text>Loading</Text>
         </View>
       </AppLoading>
     );
   }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default App;
