@@ -26,8 +26,8 @@ const Routes: React.FC = () => {
           component={TodoListScreen}
           options={({ navigation }) => ({
             headerTitle: 'Todo List Application',
-            headerLeft: (props) => <></>,
-            headerRight: (props) => (
+            headerLeft: () => <></>,
+            headerRight: () => (
               <MaterialIcons
                 name="logout"
                 size={24}
