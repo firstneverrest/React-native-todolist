@@ -3,16 +3,19 @@ import {
   StyleSheet,
   Text,
   View,
-  Alert,
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
 } from 'react-native';
-import { Button, Title, TextInput } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { NavigationProps, Tasks } from 'type.model';
 import globalStyles from '../styles/global';
 import axios from 'axios';
 import colors from '../styles/colors';
+
+// components
+import AddModal from '../components/AddModal';
+import EditModal from '../components/EditModal';
 
 // get and delete token
 import { getData } from '../utils';
@@ -22,30 +25,26 @@ import { AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const TodoListScreen = ({ navigation }: NavigationProps) => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 2,
-      name: 'นัดทานข้าวเที่ยง',
-      when: '2021-08-01T12:00:00',
-    },
-    {
-      id: 1,
-      name: 'ส่งพัสดุไปรษณีย์',
-      when: '2021-08-02T10:00:00',
-    },
-    {
-      id: 8,
-      name: 'นัดทำการบ้าน',
-      when: '2021-08-03T10:00:00',
-    },
-  ]);
+  const [tasks, setTasks] = useState([]);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editTask, setEditTask] = useState({});
+  const [isEditError, setIsEditError] = useState(false);
+  const [isAddError, setIsAddError] = useState(false);
 
   useEffect(() => {
     if (getData('token') === null) {
       navigation.navigate('Login');
     }
-    // getTodoList();
+    getTodoList();
   }, [navigation]);
+
+  const closeModal = () => {
+    setIsEditModalOpen(false);
+    setIsAddModalOpen(false);
+    setIsAddError(false);
+    setIsEditError(false);
+  };
 
   const getTodoList = async () => {
     const token = await getData('token');
@@ -65,52 +64,63 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
       });
   };
 
-  const addTodoList = (name: string, when: Date) => {
-    const token = getData('token');
+  const addTodoList = async (name: string, when: Date) => {
+    const token = await getData('token');
 
     const data = {
       name: name,
       when: when,
     };
 
-    axios
+    const response = await axios
       .post('https://learningportal.ocsc.go.th/todoapi/activities', data, {
         headers: { Authorization: 'Bearer ' + token },
       })
       .then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200 || 201) {
           getTodoList();
+          return false;
         }
       })
       .catch((error) => {
         console.log(error);
+        setIsAddError(true);
+        return true;
       });
+
+    return response;
   };
 
-  const editTodoList = (id: number, name: string, when: Date) => {
-    const token = getData('token');
+  const editTodoList = async (id: number, name: string, when: Date) => {
+    const token = await getData('token');
 
     const data = {
       name: name,
       when: when,
     };
 
-    axios
+    const response = await axios
       .put('https://learningportal.ocsc.go.th/todoapi/activities/' + id, data, {
         headers: { Authorization: 'Bearer ' + token },
       })
       .then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200 || 201) {
           getTodoList();
+          console.log('complete');
+          return false;
         }
       })
       .catch((error) => {
         console.log(error);
+        setIsEditError(true);
+        return true;
       });
+
+    return response;
   };
 
-  const deleteTodoList = (id: number) => {
-    const token = getData('token');
+  const deleteTodoList = async (id: number) => {
+    const token = await getData('token');
 
     axios
       .delete('https://learningportal.ocsc.go.th/todoapi/activities/' + id, {
@@ -122,26 +132,27 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
         }
       })
       .catch((error) => {
+        getTodoList();
         console.log(error);
       });
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-      }}
-    >
-      <View style={globalStyles.container}>
-        <ScrollView>
+    <ScrollView>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
+        <View style={globalStyles.container}>
           <View style={styles.loginContainer}>
-            <Title style={globalStyles.header}>รายการสิ่งที่ต้องทำ</Title>
+            <Text style={globalStyles.header}>รายการสิ่งที่ต้องทำ</Text>
             <View style={styles.alignAddIcon}>
               <Button
                 icon="clipboard-plus"
                 style={styles.addButton}
                 mode="contained"
-                onPress={() => console.log('Pressed')}
+                onPress={() => setIsAddModalOpen(true)}
               >
                 เพิ่มงาน
               </Button>
@@ -158,13 +169,21 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
                       name="edit"
                       size={24}
                       color="black"
-                      style={styles.icon}
+                      onPress={() => {
+                        setIsEditModalOpen(true);
+                        setEditTask({
+                          id: item.id,
+                          name: item.name,
+                          when: item.when,
+                        });
+                      }}
                     />
                     <MaterialIcons
                       name="delete-outline"
                       size={24}
                       color="red"
                       style={styles.icon}
+                      onPress={() => deleteTodoList(item.id)}
                     />
                   </View>
                 </View>
@@ -176,14 +195,33 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
               </View>
             )}
           </View>
-        </ScrollView>
-      </View>
-    </TouchableWithoutFeedback>
+
+          {isAddModalOpen && (
+            <AddModal
+              isOpen={true}
+              addTodoList={addTodoList}
+              closeModal={closeModal}
+              isError={isAddError}
+            />
+          )}
+          {isEditModalOpen && (
+            <EditModal
+              isOpen={true}
+              editTodoList={editTodoList}
+              closeModal={closeModal}
+              editTask={editTask}
+              isError={isEditError}
+            />
+          )}
+        </View>
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   loginContainer: {
+    zIndex: -1,
     alignItems: 'center',
   },
   card: {
@@ -216,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginLeft: 8,
+    marginLeft: 16,
   },
   alignAddIcon: {
     width: '85%',
