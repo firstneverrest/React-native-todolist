@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 
 export const logout = (navigation: any) => {
   Alert.alert('ออกจากระบบ', 'ท่านต้องการออกจากระบบหรือไม่', [
+    { text: 'ยกเลิก', onPress: () => null },
     {
       text: 'ออกจากระบบ',
       onPress: () => {
@@ -10,6 +11,5 @@ export const logout = (navigation: any) => {
         navigation.navigate('Login');
       },
     },
-    { text: 'ยกเลิก', onPress: () => null },
   ]);
 };
