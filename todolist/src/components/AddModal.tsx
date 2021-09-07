@@ -27,7 +27,7 @@ const AddModal: React.FC<AddModalProps> = ({
     <Modal
       visible={isOpen}
       onDismiss={hideModal}
-      contentContainerStyle={globalStyles.container}
+      contentContainerStyle={globalStyles.modalContainer}
     >
       <Text style={globalStyles.header}>เพิ่มรายการ</Text>
       <Text style={globalStyles.body}>งาน</Text>
