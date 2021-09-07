@@ -62,10 +62,7 @@ const AddModal: React.FC<AddModalProps> = ({
             addTodoList(task, when).then((err: any) => {
               setTask('');
               setWhen('');
-              if (!err) {
-                closeModal();
-              } else {
-              }
+              if (!err) closeModal();
             });
           }}
         >
