@@ -87,7 +87,7 @@ const index = () => {
 export default registerRootComponent(index);
 ```
 
-## Views & Texts
+## Views & Text
 
 - Views - use to wrap other component like div tag but you can't like text directly inside.
 - Text - use to insert text
