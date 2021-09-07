@@ -7,8 +7,8 @@ import {
   Keyboard,
   ScrollView,
 } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import { NavigationProps, Tasks } from 'type.model';
+import { Button } from 'react-native-paper';
+import { NavigationProps } from 'type.model';
 import globalStyles from '../styles/global';
 import axios from 'axios';
 import colors from '../styles/colors';
