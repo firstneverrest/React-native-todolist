@@ -1,4 +1,6 @@
-## To-do list with React Native
+<p align="center">
+    <img alt="React-native" src="./React-native-thumbnail.svg" width="300" />
+</p>
 
 React Native use React to create mobile apps (Android & iOS). It's very great choice for developers already familiar with React for web app.
 
@@ -70,6 +72,21 @@ In order to set other component to be the root component instead of App.js, you 
 }
 ```
 
+You need to use index.js with **js** extension because when building the app (android & ios) need to get index.js. Therefore, index.ts or index.tsx can't be used.
+
+```javascript
+// index.js
+import React from 'react';
+import { registerRootComponent } from 'expo';
+import App from './App';
+
+const index = () => {
+  return <App />;
+};
+
+export default registerRootComponent(index);
+```
+
 ## Views & Texts
 
 - Views - use to wrap other component like div tag but you can't like text directly inside.
@@ -119,6 +136,69 @@ const styles = StyleSheet.create({
 });
 ```
 
+### Global styling
+
+Writing the same CSS Code can be cumbersome. Therefore, global styling is the solution.
+
+```javascript
+// global.ts
+import { StyleSheet } from 'react-native';
+import colors from './colors';
+
+const globalStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingTop: 16,
+  },
+  header: {
+    fontFamily: 'sarabun-bold',
+    fontSize: 20,
+    marginVertical: 4,
+    lineHeight: 40,
+    alignSelf: 'center',
+  },
+  body: {
+    fontFamily: 'sarabun-regular',
+    fontSize: 16,
+  },
+  primary: {
+    color: colors.darkPurple,
+  },
+  secondary: {
+    color: colors.lightPurple,
+  },
+  lightGrey: {
+    color: colors.lightGrey,
+  },
+  darkGrey: {
+    color: colors.darkGrey,
+  },
+  white: {
+    color: colors.white,
+  },
+  black: {
+    color: colors.black,
+  },
+  error: {
+    color: colors.default.error,
+  },
+  success: {
+    color: colors.default.success,
+  },
+});
+
+export default globalStyles;
+```
+
+```javascript
+import globalStyles from './styles/global';
+
+<View style={globalStyles.container}>
+  <Text>Loading</Text>
+</View>;
+```
+
 ## react-native-paper
 
 Unfortunately, Material-UI in React is not compatible with React Native. Therefore, in order to use material design in react native, you need to use react-native-paper.
@@ -131,13 +211,23 @@ npm install react-native-paper
 
 2. edit babel.config.js
 
-```
-
+```js
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    env: {
+      production: {
+        plugins: ['react-native-paper/babel'],
+      },
+    },
+  };
+};
 ```
 
 ## State
 
-You can use state like React such as useState, useEffect
+You can use state like React such as useState, useEffect and much more.
 
 ## Button
 
@@ -147,13 +237,46 @@ Button props
 - onPress - when press the button what function will be applied
 - color - color code
 
-```javascript
+```js
+// Button from react-native-paper
+import { Button } from 'react-native-paper';
 
+<Button
+  style={globalStyles.submitButton}
+  mode="contained"
+  onPress={() => closeModal()}
+>
+  ยกเลิก
+</Button>;
 ```
 
 ## Text Inputs
 
 use `<TextInput />` to create text input form
+
+```js
+// text input from react-native-paper
+import { Button, TextInput } from 'react-native-paper'
+...
+<TextInput
+  style={styles.inputField}
+  mode="outlined"
+  label="username"
+  value={username}
+  onChangeText={(username) => setUsername(username)}
+/>
+```
+
+```javascript
+// text input from react-native
+import { TextInput } from 'react-native';
+...
+<TextInput
+  style={globalStyles.inputField}
+  value={task}
+  onChangeText={(task) => setTask(task)}
+/>
+```
 
 ## Lists
 
@@ -175,18 +298,48 @@ use the same logic like React
 
 By default, react-native app cannot be scroll. Therefore, you need to import **ScrollView** and wrap the element that need to be scrolled.
 
+```javascript
+import { TouchableWithoutFeedback } from 'react-native';
+
+return (
+  ...
+  <ScrollView>
+    <div></div>
+  </ScrollView>
+);
+```
+
 ## Alerts
 
 Show alert message using **Alert** component from react-native
+
+```javascript
+Alert.alert('ออกจากระบบ', 'ท่านต้องการออกจากระบบหรือไม่', [
+  { text: 'ยกเลิก', onPress: () => null },
+  {
+    text: 'ออกจากระบบ',
+    onPress: () => {
+      deleteData('token');
+      navigation.navigate('Login');
+    },
+  },
+]);
+```
 
 ## Dismissing the keyboard
 
 If you want the keyboard to be disappeared when press on the space. You need to import **TouchableWithoutFeedback** and **Keyboard** component.
 
 ```javascript
-<TouchableWithoutFeedback onPress={() => {
-  Keyboard.dismiss();
-}}>
+import { TouchableWithoutFeedback } from 'react-native';
+
+<TouchableWithoutFeedback
+  onPress={() => {
+    Keyboard.dismiss();
+  }}
+>
+  ...
+</TouchableWithoutFeedback>;
 ```
 
 ## Icons
@@ -248,7 +401,122 @@ const App: React.FC = () => {
 };
 ```
 
+## React Navigation
+
+Add Routing and Navigation in your project
+
+```
+npm install @react-navigation/native
+expo install react-native-screens react-native-safe-area-context
+```
+
+#### Stack Navigator
+
+```
+npm install @react-navigation/native-stack
+```
+
+```javascript
+// Routes.tsx
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MaterialIcons } from '@expo/vector-icons';
+
+// screens
+import LoginScreen from '../screens/LoginScreen';
+import TodoListScreen from '../screens/TodoListScreen';
+import { logout } from '../utils';
+
+// initialize stack
+const Stack = createNativeStackNavigator();
+
+const Routes: React.FC = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{
+            // config header
+            headerTitle: 'Todo List Application',
+          }}
+        />
+        <Stack.Screen
+          name="TodoList"
+          component={TodoListScreen}
+          options={({ navigation }) => ({
+            headerTitle: 'Todo List Application',
+            headerLeft: () => <></>,
+            headerRight: () => (
+              // use icon as header
+              <MaterialIcons
+                name="logout"
+                size={24}
+                color="black"
+                onPress={() => logout(navigation)}
+              />
+            ),
+          })}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+```
+
+### Async Storage
+
+Use to store data in mobile storage like cookie on web browser
+
+```
+npm install @react-native-async-storage/async-storage
+```
+
+```javascript
+// storage.ts
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export const storeData = async (name: string, value: Object) => {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem('@' + name, jsonValue);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getData = async (name: string) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@' + name);
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const deleteData = async (name: string) => {
+  try {
+    const jsonValue = await AsyncStorage.removeItem('@' + name);
+  } catch (e) {
+    console.log(e);
+  }
+};
+```
+
+## Build app
+
+1. use `expo build:android` for building android app or use `expo build:ios` for building ios app
+2. Expo will ask you to login with Expo account
+3. Choose apk or abb (app bundle)
+4. Build app
+5. After building app is completed, you can download apk or abb file on your local pc.
+
 ## Reference
 
 - [define root component](https://stackoverflow.com/questions/47742280/how-to-define-entry-point-for-react-native-app)
--
+- [React Native](https://reactnative.dev/)
+- [Expo](https://docs.expo.dev/)
+- [react-native-paper](https://callstack.github.io/react-native-paper/)
+- [React Navigation](https://reactnavigation.org/)
