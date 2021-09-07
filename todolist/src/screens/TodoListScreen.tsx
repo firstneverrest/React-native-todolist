@@ -138,13 +138,13 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
   };
 
   return (
-    <ScrollView>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          Keyboard.dismiss();
-        }}
-      >
-        <View style={globalStyles.container}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+    >
+      <View style={globalStyles.container}>
+        <ScrollView>
           <View style={styles.loginContainer}>
             <Text style={globalStyles.header}>รายการสิ่งที่ต้องทำ</Text>
             <View style={styles.alignAddIcon}>
@@ -195,27 +195,26 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
               </View>
             )}
           </View>
-
-          {isAddModalOpen && (
-            <AddModal
-              isOpen={true}
-              addTodoList={addTodoList}
-              closeModal={closeModal}
-              isError={isAddError}
-            />
-          )}
-          {isEditModalOpen && (
-            <EditModal
-              isOpen={true}
-              editTodoList={editTodoList}
-              closeModal={closeModal}
-              editTask={editTask}
-              isError={isEditError}
-            />
-          )}
-        </View>
-      </TouchableWithoutFeedback>
-    </ScrollView>
+        </ScrollView>
+        {isAddModalOpen && (
+          <AddModal
+            isOpen={true}
+            addTodoList={addTodoList}
+            closeModal={closeModal}
+            isError={isAddError}
+          />
+        )}
+        {isEditModalOpen && (
+          <EditModal
+            isOpen={true}
+            editTodoList={editTodoList}
+            closeModal={closeModal}
+            editTask={editTask}
+            isError={isEditError}
+          />
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
