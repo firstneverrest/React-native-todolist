@@ -9,8 +9,8 @@ import {
 import { Button, TextInput } from 'react-native-paper';
 import { NavigationProps } from 'type.model';
 import globalStyles from '../styles/global';
-import axios from 'axios';
 import { Login } from '../type.model';
+import API from '../api';
 
 // icon
 import { AntDesign } from '@expo/vector-icons';
@@ -31,8 +31,9 @@ const LoginScreen = ({ navigation }: NavigationProps) => {
       password: password,
     };
 
-    axios
-      .post<Login>('https://learningportal.ocsc.go.th/todoapi/tokens', data)
+    console.log('login');
+
+    API.post<Login>('tokens', data)
       .then((response) => {
         if (response.status === 200 || 201) {
           const token = response.data.token;

@@ -10,8 +10,8 @@ import {
 import { Button } from 'react-native-paper';
 import { NavigationProps } from 'type.model';
 import globalStyles from '../styles/global';
-import axios from 'axios';
 import colors from '../styles/colors';
+import API from '../api';
 
 // components
 import AddModal from '../components/AddModal';
@@ -49,10 +49,9 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
   const getTodoList = async () => {
     const token = await getData('token');
 
-    axios
-      .get('https://learningportal.ocsc.go.th/todoapi/activities', {
-        headers: { Authorization: 'Bearer ' + token },
-      })
+    API.get('activities', {
+      headers: { Authorization: 'Bearer ' + token },
+    })
       .then((response) => {
         if (response.status === 200) {
           let todoData = response.data;
@@ -72,10 +71,9 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
       when: when,
     };
 
-    const response = await axios
-      .post('https://learningportal.ocsc.go.th/todoapi/activities', data, {
-        headers: { Authorization: 'Bearer ' + token },
-      })
+    const response = await API.post('activities', data, {
+      headers: { Authorization: 'Bearer ' + token },
+    })
       .then((response) => {
         if (response.status === 200 || 201) {
           getTodoList();
@@ -99,10 +97,9 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
       when: when,
     };
 
-    const response = await axios
-      .put('https://learningportal.ocsc.go.th/todoapi/activities/' + id, data, {
-        headers: { Authorization: 'Bearer ' + token },
-      })
+    const response = await API.put('activities/' + id, data, {
+      headers: { Authorization: 'Bearer ' + token },
+    })
       .then((response) => {
         if (response.status === 200 || 201) {
           getTodoList();
@@ -122,10 +119,9 @@ const TodoListScreen = ({ navigation }: NavigationProps) => {
   const deleteTodoList = async (id: number) => {
     const token = await getData('token');
 
-    axios
-      .delete('https://learningportal.ocsc.go.th/todoapi/activities/' + id, {
-        headers: { Authorization: 'Bearer ' + token },
-      })
+    API.delete('activities/' + id, {
+      headers: { Authorization: 'Bearer ' + token },
+    })
       .then((response) => {
         if (response.status === 201) {
           getTodoList();
